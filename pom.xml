@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.wzm</groupId>
+    <artifactId>maven-docker-plugin-test</artifactId>
+    <version>1.0</version>
+    <packaging>jar</packaging>
+    <properties>
+        <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
+    </properties>
+    <build>
+        <resources>
+            <resource>
+                <!--Dockerfile的路径设置-->
+                <directory>src/main/docker</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/Dockerfile</include>
+                </includes>
+                <targetPath>../docker</targetPath>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>1.0.0</version>
+                <configuration>
+                    <imageName>
+                        registry.cn-beijing.aliyuncs.com/jifenke-test/maven-docker-plugin:${maven.build.timestamp}
+                    </imageName>
+                    <!--应该是Dockerfile工作路径-->
+                    <dockerDirectory>src/main/docker</dockerDirectory>
+                    <resources>
+                        <resource>
+                            <!--target路径及其内部build的war包或者jar包位置和文件名-->
+                            <targetPath>/</targetPath>
+                            <directory>${project.build.directory}</directory>
+                            <include>${project.build.finalName}.jar</include>
+                        </resource>
+                    </resources>
+                    <!--push到远程仓库的参数这个id对应setting中的serverId，在项目中无效，必须是maven的总setting文件才有效-->
+                    <serverId>docker-aliyun</serverId>
+                    <registryUrl>registry.cn-beijing.aliyuncs.com</registryUrl>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

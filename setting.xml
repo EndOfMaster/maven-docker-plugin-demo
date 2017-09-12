@@ -1,0 +1,7 @@
+<servers>
+    <server>
+        <id>docker-aliyun</id>
+        <username>test</username>
+        <password>test-password</password>
+    </server>
+</servers>
